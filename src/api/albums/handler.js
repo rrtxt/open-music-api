@@ -23,7 +23,7 @@ class AlbumsHandler {
   }
 
   async getAlbumsHandler() {
-    const albums = this._service.getAlbums()
+    const albums = await this._service.getAlbums()
     const response = h.response({
       status: 'success',
       data: {
@@ -37,28 +37,14 @@ class AlbumsHandler {
 
   async getAlbumByIdHandler(request, h) {
     const { id } = request.params
-    try {
-      const album = this._service.getAlbumById(id)
-      const response = h.response({
-        status: 'success',
-        data: {
-          album
-        }
-      })
-      response.code(200)
-      return response
-    } catch (error) {
-      if (error instanceof NotFoundError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message
-        })
-        response.code(404)
-        return response
+    const album = await this._service.getAlbumById(id)
+    console.log(album)
+    const response = h.response({
+      status: 'success',
+      data: {
+        album
       }
-    }
-
-
+    })
     response.code(200)
     return response
   }
