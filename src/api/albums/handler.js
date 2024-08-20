@@ -1,3 +1,5 @@
+const NotFoundError = require("../../exceptions/NotFoundError")
+
 class AlbumsHandler {
   constructor(service, validator) {
     this._service = service
@@ -35,14 +37,27 @@ class AlbumsHandler {
 
   async getAlbumByIdHandler(request, h) {
     const { id } = request.params
-    const album = this._service.getAlbumById(id)
-
-    const response = h.response({
-      status: 'success',
-      data: {
-        album
+    try {
+      const album = this._service.getAlbumById(id)
+      const response = h.response({
+        status: 'success',
+        data: {
+          album
+        }
+      })
+      response.code(200)
+      return response
+    } catch (error) {
+      if (error instanceof NotFoundError) {
+        const response = h.response({
+          status: 'fail',
+          message: error.message
+        })
+        response.code(404)
+        return response
       }
-    })
+    }
+
 
     response.code(200)
     return response
