@@ -83,3 +83,5 @@ class SongsHandler {
     return response
   }
 }
+
+module.exports = { SongsHandler }
