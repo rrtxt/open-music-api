@@ -51,23 +51,21 @@ class AlbumsHandler {
 
   async editAlbumByIdHandler(request, h) {
     this._validator.validatePayload(request.payload)
+    const { id } = request.params
     const { name, year } = request.payload
-
-    const albumId = await this._service.editAlbumById({ name, year })
-
+    const albumId = await this._service.editAlbumById(id, { name, year })
     const response = h.response({
       status: 'success',
       message: 'Album berhasil diedit'
     })
 
     response.code(200)
-
     return response
   }
 
   async deleteAlbumByIdHandler(request, h) {
     const { id } = request.params
-    const albumId = this._service.deleteAlbumById(id)
+    const albumId = await this._service.deleteAlbumById(id)
 
     const response = h.response({
       status: 'success',
