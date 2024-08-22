@@ -4,20 +4,20 @@ const InvariantError = require("../exceptions/InvariantError");
 const NotFoundError = require("../exceptions/NotFoundError");
 
 class SongsService {
-  construcor() {
+  constructor() {
     this._pool = new Pool()
   }
 
   async addSong({ title, year, genre, performer, duration, albumId }) {
     const id = nanoid(16)
-
+    console.log(this._pool)
     const query = {
       text: 'INSERT INTO songs values($1, $2, $3, $4, $5, $6, $7) returning id',
-      values: [id, title, year, performer, genre, duration, albumId]
+      values: [id, title, year, genre, performer, duration, albumId]
     }
 
     const result = await this._pool.query(query)
-
+    console.log(result)
     if (!result.rows[0].id) {
       throw new InvariantError('Song gagal ditambahkan')
     }
@@ -48,10 +48,10 @@ class SongsService {
 
   async editSongById(id, { title, year, genre, performer, duration, albumId }) {
     const query = {
-      text: 'UPDATE songs SET title = $1, year = $2, genre = $3, performer = $4, duration = $5, albumId = $6, WHERE id = $7 returning id',
-      values: [id, title, year, genre, performer, duration, albumId]
+      text: 'UPDATE songs SET title = $1, year = $2, genre = $3, performer = $4, duration = $5, "albumId" = $6 WHERE id = $7 returning id',
+      values: [title, year, genre, performer, duration, albumId, id]
     }
-
+    console.log(query)
     const result = await this._pool.query(query)
 
     if (!result.rows.length) {
@@ -76,3 +76,5 @@ class SongsService {
     return result.rows
   }
 }
+
+module.exports = { SongsService }

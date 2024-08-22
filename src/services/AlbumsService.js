@@ -45,9 +45,8 @@ class AlbumsService {
       throw new NotFoundError('Album tidak ditemukan')
     }
 
-    return result.rows
+    return result.rows[0]
   }
-
   async editAlbumById(id, { name, year }) {
     const query = {
       text: 'UPDATE albums SET name = $1, year = $2 WHERE id = $3 returning id',
@@ -55,7 +54,6 @@ class AlbumsService {
     }
 
     const result = await this._pool.query(query)
-
     if (!result.rows.length) {
       throw new NotFoundError('Gagal memperbarui album. Id tidak ditemukan')
     }

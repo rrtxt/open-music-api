@@ -69,7 +69,7 @@ class AlbumsHandler {
 
     const response = h.response({
       status: 'success',
-      message: `Album dengan id ${albumId} dihapus`
+      message: `Album berhasil dihapus`
     })
 
     response.code(200)
