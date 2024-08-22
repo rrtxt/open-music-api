@@ -23,7 +23,18 @@ class SongsHandler {
   }
 
   async getAllSongsHandler(request, h) {
-    const songs = await this._service.getSongs()
+    const { title, performer } = request.query
+    let parameter = {}
+
+    if (title) {
+      parameter.title = title
+    }
+
+    if (performer) {
+      parameter.performer = performer
+    }
+
+    const songs = await this._service.getSongs(parameter)
 
     const newSongs = songs.map((song) => ({
       id: song.id,

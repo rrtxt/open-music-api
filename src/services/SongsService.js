@@ -2,6 +2,7 @@ const { nanoid } = require("nanoid");
 const { Pool } = require("pg");
 const InvariantError = require("../exceptions/InvariantError");
 const NotFoundError = require("../exceptions/NotFoundError");
+const { query_timeout } = require("pg/lib/defaults");
 
 class SongsService {
   constructor() {
@@ -25,19 +26,28 @@ class SongsService {
     return result.rows[0].id
   }
 
-  async getSongs(albumId) {
-    let query
+  async getSongs({ albumId, title, performer }) {
+    let queryText = 'SELECT * FROM songs WHERE 1=1'
+    const queryValues = []
     if (albumId) {
-      query = {
-        text: 'SELECT * FROM songs WHERE "albumId" = $1',
-        values: [albumId]
-      }
-    } else {
-      query = 'SELECT * FROM songs'
+      queryValues.push(albumId)
+      queryText += ` AND "albumId" = $${queryValues.length}`
+    }
+    if (title) {
+      queryValues.push(`%${title}%`)
+      queryText += ` AND title ILIKE $${queryValues.length}`
+    }
+    if (performer) {
+      queryValues.push(`%${performer}%`)
+      queryText += ` AND performer  ILIKE $${queryValues.length}`
+    }
+    const query = {
+      text: queryText,
+      values: queryValues
     }
 
+    console.log(queryText, queryValues)
     const result = await this._pool.query(query)
-
     return result.rows
   }
 

@@ -39,7 +39,7 @@ class AlbumsHandler {
   async getAlbumByIdHandler(request, h) {
     const { id } = request.params
     const album = await this._albumsService.getAlbumById(id)
-    const songs = await this._songsService.getSongs(id)
+    const songs = await this._songsService.getSongs({ albumId: id })
     const newSongs = songs.map((song) => ({
       id: song.id,
       title: song.title,
