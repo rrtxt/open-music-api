@@ -25,8 +25,18 @@ class SongsService {
     return result.rows[0].id
   }
 
-  async getSongs() {
-    const result = await this._pool.query('SELECT * FROM songs')
+  async getSongs(albumId) {
+    let query
+    if (albumId) {
+      query = {
+        text: 'SELECT * FROM songs WHERE albumId = $1',
+        values: [albumId]
+      }
+    } else {
+      query = 'SELECT * FROM songs'
+    }
+
+    const result = await this._pool.query(query)
 
     return result.rows
   }
