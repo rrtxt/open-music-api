@@ -29,7 +29,7 @@ class SongsService {
     let query
     if (albumId) {
       query = {
-        text: 'SELECT * FROM songs WHERE albumId = $1',
+        text: 'SELECT * FROM songs WHERE "albumId" = $1',
         values: [albumId]
       }
     } else {

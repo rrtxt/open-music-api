@@ -1,8 +1,9 @@
 const NotFoundError = require("../../exceptions/NotFoundError")
 
 class AlbumsHandler {
-  constructor(service, validator) {
-    this._service = service
+  constructor(albumsService, songsService, validator) {
+    this._albumsService = albumsService
+    this._songsService = songsService
     this._validator = validator
   }
 
@@ -10,7 +11,7 @@ class AlbumsHandler {
     this._validator.validatePayload(request.payload)
 
     const { name, year } = request.payload
-    const albumId = await this._service.addAlbum({ name, year })
+    const albumId = await this._albumsService.addAlbum({ name, year })
 
     const response = h.response({
       status: 'success',
@@ -23,7 +24,7 @@ class AlbumsHandler {
   }
 
   async getAlbumsHandler() {
-    const albums = await this._service.getAlbums()
+    const albums = await this._albumsService.getAlbums()
     const response = h.response({
       status: 'success',
       data: {
@@ -37,12 +38,21 @@ class AlbumsHandler {
 
   async getAlbumByIdHandler(request, h) {
     const { id } = request.params
-    const album = await this._service.getAlbumById(id)
-    console.log(album)
+    const album = await this._albumsService.getAlbumById(id)
+    const songs = await this._songsService.getSongs(id)
+    const newSongs = songs.map((song) => ({
+      id: song.id,
+      title: song.title,
+      performer: song.performer,
+    }))
+
     const response = h.response({
       status: 'success',
       data: {
-        album
+        album: {
+          ...album,
+          songs: newSongs
+        }
       }
     })
     response.code(200)
@@ -53,7 +63,7 @@ class AlbumsHandler {
     this._validator.validatePayload(request.payload)
     const { id } = request.params
     const { name, year } = request.payload
-    const albumId = await this._service.editAlbumById(id, { name, year })
+    const albumId = await this._albumsService.editAlbumById(id, { name, year })
     const response = h.response({
       status: 'success',
       message: 'Album berhasil diedit'
@@ -65,7 +75,7 @@ class AlbumsHandler {
 
   async deleteAlbumByIdHandler(request, h) {
     const { id } = request.params
-    const albumId = await this._service.deleteAlbumById(id)
+    const albumId = await this._albumsService.deleteAlbumById(id)
 
     const response = h.response({
       status: 'success',

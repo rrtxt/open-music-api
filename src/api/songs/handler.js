@@ -25,10 +25,16 @@ class SongsHandler {
   async getAllSongsHandler(request, h) {
     const songs = await this._service.getSongs()
 
+    const newSongs = songs.map((song) => ({
+      id: song.id,
+      title: song.title,
+      performer: song.performer
+    }))
+
     const response = h.response({
       status: 'success',
       data: {
-        songs
+        songs: newSongs
       }
     })
 
@@ -51,7 +57,7 @@ class SongsHandler {
     return response
   }
 
-  async editSongByIdhandler(request, h) {
+  async editSongByIdHandler(request, h) {
     this._validator.validatePayload(request.payload)
     const { id } = request.params
     const { title, year, genre, performer, duration, albumId } = request.payload
