@@ -15,7 +15,7 @@ class UsersService {
     const hashedPassword = await bcrypt.hash(password, 10)
 
     const query = {
-      text: 'INSERT INTO songs values($1, $2, $3, $4) returning id',
+      text: 'INSERT INTO users VALUES($1, $2, $3, $4) returning id',
       values: [id, username, hashedPassword, fullname]
     }
 
