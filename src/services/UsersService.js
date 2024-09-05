@@ -16,7 +16,7 @@ class UsersService {
 
     const query = {
       text: 'INSERT INTO songs values($1, $2, $3, $4) returning id',
-      values: [id, username, password, fullname]
+      values: [id, username, hashedPassword, fullname]
     }
 
     const result = await this._pool.query(query)
