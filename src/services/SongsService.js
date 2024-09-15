@@ -58,6 +58,7 @@ class SongsService {
     }
 
     const result = await this._pool.query(query)
+    console.log(`Result untuk id ${id} adalah ${JSON.stringify(result.rows)}`);
 
     if (!result.rows.length) {
       throw new NotFoundError('Song tidak ditemukan')
