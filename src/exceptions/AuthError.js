@@ -1,10 +1,19 @@
 const ClientError = require("./ClientError");
 
-class AuthError extends ClientError {
+class AuthenticationError extends ClientError {
   constructor(message) {
     super(message, 401)
-    this.name = 'AuthError'
+    this.name = 'AuthenticationError'
   }
 }
 
-module.exports = AuthError
+class AuthorizationError extends ClientError {
+  constructor(message) {
+    super(message, 403)
+    this.name = 'AuthorizationError'
+  }
+}
+
+
+
+module.exports = { AuthenticationError, AuthorizationError }
